@@ -2,4 +2,5 @@ intel/
 steps-taken.txt
 requirements.txt
 src/__pycache__
-__pycache__/utils.cpython-36.pyc
+__pycache__/
+imagen.jpg
