@@ -2,16 +2,6 @@ import numpy as np
 import cv2
 
 
-class Person():
-    """
-    Class to manage detections instances.
-    """
-
-    def __init__(self, id, frame_init):
-        self.id = id
-        self.frame_init = frame_init
-
-
 def handle_image(input_image, width=60, height=60):
     """
     Function to preprocess input image and return it in a shape accepted by the model.
@@ -104,3 +94,29 @@ def draw_text(frame,
     img = cv2.putText(img, text,(x,y), font, font_size, font_color, font_thickness)
 
     return img
+
+
+def draw_points(frame, result_lm, color=(0,0,255), thickness=-1):
+    """
+    Function to draw a points over a frame on each detection in result_lm.
+    Args:
+        frame: A frame (or image) where to draw the bounding boxes.
+        result_lm: A list of points (or landmarks) coordinates.
+        color: Bounding box color (in BGR).
+    Returns:
+        img: Image with all the points drawed.
+    """
+
+    h = frame.shape[0]
+    w = frame.shape[1]
+
+    img = frame.copy()
+    length = len(result_lm)
+
+    for i in range(0,length,2):
+        img = cv2.circle(frame, (int(result_lm[i]*w), int(result_lm[i+1]*h)), 2, color, thickness=thickness)
+
+    # for pt in result_lm:
+    #     img = cv2.circle(frame, (int(pt[0]*w), int(pt[1]*h)), 2, color, thickness=thickness)
+    return img
+

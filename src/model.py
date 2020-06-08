@@ -140,8 +140,8 @@ class HeadPose(GenericModel):
     name: "angle_r_fc", shape: [1, 1] - Estimated roll (in degrees).
 
         '''
-        #return self.outputs['angle_p_fc'][0,0], self.outputs['angle_r_fc'][0,0], self.outputs['angle_y_fc'][0,0]
-        return None
+        return self.outputs['angle_p_fc'][0,0], self.outputs['angle_r_fc'][0,0], self.outputs['angle_y_fc'][0,0]
+        #return None
 
 class FaceLandmarks(GenericModel):
     def __init__(self, model_path=FACE_LANDMARKS_MODEL):
@@ -154,28 +154,60 @@ class FaceLandmarks(GenericModel):
         floating point values for five landmarks coordinates in the form (x0, y0, x1, y1, ..., x5, y5). 
         All the coordinates are normalized to be in range [0,1].
         '''
+        # out = self.outputs[0,:,0,0]
+
+        # length = len(out)
+        # output = []
+        # for i in range(length-1):
+        #     x = out[i]
+        #     y = out[i+1]
+
 
         return self.outputs[0,:,0,0]
 
 
 ######
 # import cv2
-# img = cv2.imread('imagen.jpg')
+# #img = cv2.imread('imagen.jpg')
+# cap = cv2.VideoCapture(0)
 
-# facedetector = FaceDetector()
-# facedetector.predict(img)
-# facedetector.wait()
-# facedetector.get_output()
-# print('facedet',facedetector.preprocess_output())
+# while(cap.isOpened()):
+#     ret, img = cap.read()
+#     # img2 = img.copy()
+#     facedetector = FaceDetector()
+#     facedetector.predict(img)
+#     facedetector.wait()
+#     facedetector.get_output()
+#     out = facedetector.preprocess_output()
+#     detection = []
+#     for o in out:
+#         if o[2] > 0.6:
+#             xmin = o[3]
+#             ymin = o[4]
+#             xmax = o[5]
+#             ymax = o[6]
+#             detection.append([xmin, ymin, xmax, ymax])
 
-# headpose = HeadPose()
-# headpose.predict(img)
-# headpose.wait()
-# headpose.get_output()
-# print('headpose',headpose.outputs)
+#     w = img.shape[1]
+#     h = img.shape[0]
+#     detection = detection[0]
+#     detection = [detection[0]*w, detection[1]*h, detection[2]*w, detection[3]*h]
 
-# facelm = FaceLandmarks()
-# pred = facelm.predict(img)
-# facelm.wait()
-# facelm.get_output()
-# print('facelm',facelm.preprocess_output())
+#     img2 = img[int(detection[1]):int(detection[3]), int(detection[0]):int(detection[2])]
+#     facelm = FaceLandmarks()
+#     pred = facelm.predict(img2)
+#     facelm.wait()
+#     facelm.get_output()
+#     out = facelm.preprocess_output()
+#     img = utils.draw_points(img, out, thickness=8)
+
+#     # headpose = HeadPose()
+#     # headpose.predict(img)
+#     # headpose.wait()
+#     # headpose.get_output()
+#     # print('headpose',headpose.preprocess_output())
+
+#     cv2.imshow('frame',img)
+#     if cv2.waitKey(1) & 0xFF == ord('q'):
+#         break
+# # cv2.imwrite('resultado.png', img)
