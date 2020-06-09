@@ -100,7 +100,23 @@ def get_face_crop(frame, facedetector, args):
 
     return frame[int(detection[1]):int(detection[3]), int(detection[0]):int(detection[2])]
 
+# Function to get eyes coordinates:
+def get_eyes_coordinates(face_crop, facelm):
 
+    output = None
+
+    try:
+        facelm.predict(face_crop)
+        facelm.wait()
+        facelm.get_output()
+        output = facelm.preprocess_output()
+    except:
+        return None
+
+    if output:
+        
+
+    return None
 
 def main():
     """

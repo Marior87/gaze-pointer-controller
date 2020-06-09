@@ -199,7 +199,7 @@ class FaceLandmarks(GenericModel):
 #     facelm.wait()
 #     facelm.get_output()
 #     out = facelm.preprocess_output()
-#     img = utils.draw_points(img, out, thickness=8)
+#     img = utils.draw_points(img, out[:8], thickness=8)
 
 #     # headpose = HeadPose()
 #     # headpose.predict(img)
@@ -207,7 +207,7 @@ class FaceLandmarks(GenericModel):
 #     # headpose.get_output()
 #     # print('headpose',headpose.preprocess_output())
 
-#     cv2.imshow('frame',img)
-#     if cv2.waitKey(1) & 0xFF == ord('q'):
-#         break
+    # cv2.imshow('frame',img)
+    # if cv2.waitKey(1) & 0xFF == ord('q'):
+    #     break
 # # cv2.imwrite('resultado.png', img)
