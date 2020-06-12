@@ -14,109 +14,29 @@ def handle_image(input_image, width=60, height=60):
     return preprocessed_image
 
 
-def calculate_centroid(bounding_box):
-    """
-    Function to calculate centroid relative position (x,y) given a bounding box.
-    """
+def get_eyes_crops(face_crop, right_eye, left_eye, relative_eye_size=0.20):
 
-    xmin = bounding_box[0]
-    ymin = bounding_box[1]
-    xmax = bounding_box[2]
-    ymax = bounding_box[3]
+    crop_w = face_crop.shape[1]
+    crop_h = face_crop.shape[0]
 
-    return ((xmin+xmax)/2, (ymin+ymax)/2)
+    x_right_eye = right_eye[0]*crop_w
+    y_right_eye = right_eye[1]*crop_h
+    x_left_eye = left_eye[0]*crop_w
+    y_left_eye = left_eye[1]*crop_h
 
+    relative_eye_size_x = crop_w*relative_eye_size
+    relative_eye_size_y = crop_h*relative_eye_size
 
-def draw_bounding_box(frame, detection, color =(0,255,0)):
-    """
-    Function to draw a bounding box over a frame on a detection.
+    right_eye_dimensions = [int(y_right_eye-relative_eye_size_y/2), int(y_right_eye+relative_eye_size_y/2),
+    int(x_right_eye-relative_eye_size_x/2), int(x_right_eye+relative_eye_size_x/2)]
 
-    Args:
-        frame: A frame (or image) where to draw the bounding boxes.
-        detection: A list of a bounding box coordinates.
-        color: Bounding box color (in BGR).
+    left_eye_dimensions = [int(y_left_eye-relative_eye_size_y/2), int(y_left_eye+relative_eye_size_y/2),
+    int(x_left_eye-relative_eye_size_x/2), int(x_left_eye+relative_eye_size_x/2)]
 
-    Returns:
-        img: Image with all the bounding boxes drawed.
-    """
+    right_eye_crop = face_crop[right_eye_dimensions[0]:right_eye_dimensions[1], 
+                                right_eye_dimensions[2]:right_eye_dimensions[3]]
 
-    # Obtain current frame's dimentions:
-    height = frame.shape[0]
-    width = frame.shape[1]
+    left_eye_crop = face_crop[left_eye_dimensions[0]:left_eye_dimensions[1],
+                                left_eye_dimensions[2]:left_eye_dimensions[3]]
 
-    # Loop over every detection:
-    xmin = int(detection[0]*width)  # Obtain Top Left X coordinate.
-    ymin = int(detection[1]*height) # Obtain Top Left Y coordinate.
-    xmax = int(detection[2]*width)  # Obtain Bottom Right X coordinate.
-    ymax = int(detection[3]*height) # Obtain Bottom Right Y coordinate.
-
-    # Draw the bounding box:
-    img = cv2.rectangle(frame,(xmin,ymin),(xmax,ymax),color=color,thickness=5)
-
-    return img
-
-
-def draw_text(frame, 
-                text, 
-                coordinates=(0.1,0.1), 
-                font = cv2.FONT_HERSHEY_SIMPLEX, 
-                font_size = 0.7, 
-                font_color = (0,0,0), 
-                font_thickness = 2):
-    """
-    Function to draw text over a bounding box.
-
-    Args:
-        frame: Frame (or image) where to draw text.
-        texts: A list of text, should be the same lenght as the quantity of bounding boxes.
-        results_bb: A list of bounding box coordinates, which each one is in the form (xmin, ymin, xmax, ymax).
-        font: OpenCV font style
-        font_size: OpenCV font size.
-        font_color: BGR font color tuple.
-        font_thickness: Font line thickness.
-        offset_x: Offset in x position of text regarding the upper left corner
-        offset_y: Offset in y position of text regarding the upper left corner
-
-    Returns:
-        img: Image with required text drawn.
-    """
-
-    #assert len(results_bb) == len(texts), "Number of bounding boxes ({}) not the same as number of texts ({})".format([len(results_bb), len(texts)])
-    
-    h = frame.shape[0]
-    w = frame.shape[1]
-
-    img = frame.copy()
-
-    x = int(coordinates[0]*w)
-    y = int(coordinates[1]*h)
-
-    img = cv2.putText(img, text,(x,y), font, font_size, font_color, font_thickness)
-
-    return img
-
-
-def draw_points(frame, result_lm, color=(0,0,255), thickness=-1):
-    """
-    Function to draw a points over a frame on each detection in result_lm.
-    Args:
-        frame: A frame (or image) where to draw the bounding boxes.
-        result_lm: A list of points (or landmarks) coordinates.
-        color: Bounding box color (in BGR).
-    Returns:
-        img: Image with all the points drawed.
-    """
-
-    h = frame.shape[0]
-    w = frame.shape[1]
-
-    img = frame.copy()
-    length = len(result_lm)
-
-    for i in range(0,length,2):
-        img = cv2.circle(frame, (int(result_lm[i]*w), int(result_lm[i+1]*h)), 2, color, thickness=thickness)
-
-    # for pt in result_lm:
-    #     img = cv2.circle(frame, (int(pt[0]*w), int(pt[1]*h)), 2, color, thickness=thickness)
-    return img
-
+    return right_eye_crop, left_eye_crop, right_eye_dimensions, left_eye_dimensions
